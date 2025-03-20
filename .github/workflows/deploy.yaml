@@ -46,6 +46,13 @@ jobs:
       - name: Install Databricks CLI
         run: pip install databricks-cli
 
+      - name: Configure Databricks CLI
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks configure --host $DATABRICKS_HOST --token $DATABRICKS_TOKEN
+
       - name: Deploy Notebook to Databricks
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
@@ -64,8 +71,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install DBT
-        run: pip install dbt
+      - name: Install DBT Core
+        run: pip install dbt-core dbt-databricks
 
       - name: Run DBT Models
         env:

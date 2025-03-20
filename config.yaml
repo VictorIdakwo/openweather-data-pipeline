@@ -1,0 +1,12 @@
+aws:
+  region: "eu-north-1"
+  kinesis_stream: "openweather-kinesis-stream"
+
+openweather:
+  api_key: "YOUR_OPENWEATHER_API_KEY"
+  default_city: "Maiduguri"
+
+databricks:
+  host: "YOUR_DATABRICKS_HOST"
+  token: "YOUR_DATABRICKS_TOKEN"
+  warehouse: "YOUR_WAREHOUSE_ID"

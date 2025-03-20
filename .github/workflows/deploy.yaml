@@ -57,7 +57,7 @@ jobs:
             --file databricks/kinesis_ingestion.py \
             --language PYTHON \
             --overwrite \
-            /Workspace/kinesis_ingestion.py
+            /Workspace/kinesis_ingestion.py || { echo "Notebook import failed"; exit 1; }
 
   deploy_dbt:
     name: Deploy DBT Models
@@ -70,9 +70,16 @@ jobs:
       - name: Install DBT
         run: pip install dbt-core dbt-databricks
 
+      - name: Configure DBT Profile
+        run: |
+          mkdir -p ~/.dbt
+          echo "${{ secrets.DBT_PROFILE }}" > ~/.dbt/profiles.yml
+          cat ~/.dbt/profiles.yml  # Debugging step to verify profile setup
+
+      - name: Verify DBT Profile Exists
+        run: ls -la ~/.dbt  # Debugging step
+
       - name: Run DBT Models
-        env:
-          DBT_PROFILE: ${{ secrets.DBT_PROFILE }}
         run: |
           cd dbt/
-          dbt run
+          dbt run || { echo "DBT run failed"; exit 1; }

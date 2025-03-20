@@ -53,6 +53,11 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
+          if [ ! -f databricks/kinesis_ingestion.py ]; then
+            echo "Notebook file missing: databricks/kinesis_ingestion.py"
+            exit 1
+          fi
+          
           databricks workspace import \
             --file databricks/kinesis_ingestion.py \
             --language PYTHON \
@@ -73,8 +78,18 @@ jobs:
       - name: Configure DBT Profile
         run: |
           mkdir -p ~/.dbt
-          echo "${{ secrets.DBT_PROFILE }}" > ~/.dbt/profiles.yml
-          cat ~/.dbt/profiles.yml  # Debugging step to verify profile setup
+          cat <<EOF > ~/.dbt/profiles.yml
+          default:
+            target: dev
+            outputs:
+              dev:
+                type: databricks
+                schema: default
+                host: ${DATABRICKS_HOST}
+                http_path: /sql/1.0/warehouses/b1fcf80ad7899d1c
+                token: ${DATABRICKS_TOKEN}
+          EOF
+          cat ~/.dbt/profiles.yml  # Debugging step
 
       - name: Verify DBT Profile Exists
         run: ls -la ~/.dbt  # Debugging step

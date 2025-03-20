@@ -71,8 +71,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install DBT Core
-        run: pip install dbt-core dbt-databricks
+      - name: Install DBT
+        run: pip install dbt
 
       - name: Run DBT Models
         env:

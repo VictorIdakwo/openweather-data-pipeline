@@ -60,22 +60,19 @@ jobs:
             /Workspace/kinesis_ingestion.py
 
   deploy_dbt:
-  name: Deploy DBT Models
-  runs-on: ubuntu-latest
-  needs: deploy_databricks
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    name: Deploy DBT Models
+    runs-on: ubuntu-latest
+    needs: deploy_databricks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Install DBT
-      run: pip install dbt-core dbt-databricks
+      - name: Install DBT
+        run: pip install dbt-core dbt-databricks
 
-    - name: Configure DBT Profile
-      run: |
-        mkdir -p ~/.dbt
-        echo "${{ secrets.DBT_PROFILE }}" > ~/.dbt/profiles.yml
-
-    - name: Run DBT Models
-      run: |
-        cd dbt/
-        dbt run
+      - name: Run DBT Models
+        env:
+          DBT_PROFILE: ${{ secrets.DBT_PROFILE }}
+        run: |
+          cd dbt/
+          dbt run

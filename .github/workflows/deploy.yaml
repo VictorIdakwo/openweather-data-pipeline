@@ -48,6 +48,11 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | bash
           databricks version
 
+      - name: Debug Environment Variables
+        run: |
+          echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}"
+          echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}"
+
       - name: Deploy Notebook to Databricks
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
@@ -75,6 +80,16 @@ jobs:
       - name: Install DBT
         run: pip install dbt-core dbt-databricks
 
+      - name: Set Environment Variables
+        run: |
+          echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
+          echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Debug Environment Variables
+        run: |
+          echo "DATABRICKS_HOST=$DATABRICKS_HOST"
+          echo "DATABRICKS_TOKEN=$DATABRICKS_TOKEN"
+
       - name: Configure DBT Profile
         run: |
           mkdir -p ~/.dbt
@@ -85,9 +100,9 @@ jobs:
               dev:
                 type: databricks
                 schema: default
-                host: ${DATABRICKS_HOST}
+                host: "$DATABRICKS_HOST"
                 http_path: /sql/1.0/warehouses/b1fcf80ad7899d1c
-                token: ${DATABRICKS_TOKEN}
+                token: "$DATABRICKS_TOKEN"
           EOF
           cat ~/.dbt/profiles.yml  # Debugging step
 
@@ -97,4 +112,5 @@ jobs:
       - name: Run DBT Models
         run: |
           cd dbt/
+          dbt debug
           dbt run || { echo "DBT run failed"; exit 1; }

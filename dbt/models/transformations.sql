@@ -1,5 +1,5 @@
 WITH raw_data AS (
-    SELECT * FROM {{ source('delta', 'weather_data') }}
+    SELECT * FROM {{ source('hive_metastore', 'weather_data') }}  -- ✅ Correct reference
 )
 SELECT
     city,

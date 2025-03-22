@@ -1,0 +1,7 @@
+version: 2
+
+sources:
+  - name: hive_metastore  # This is your catalog
+    schema: delta  # This is your schema
+    tables:
+      - name: weather_data  # This is your table name

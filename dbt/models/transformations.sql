@@ -1,11 +1,11 @@
 WITH raw_data AS (
-    SELECT * FROM {{ source('hive_metastore', 'weather_data') }}  -- ✅ Correct reference
+    SELECT * FROM {{ source('hive_metastore', 'weather_data') }}  -- ✅ Correct source reference
 )
 SELECT
-    city,
+    location AS city,  -- ✅ Use `location` instead of `city`
     temperature,
     humidity,
-    weather,
+    wind_speed,
     timestamp,
     CASE
         WHEN temperature > 35 THEN 'Hot'

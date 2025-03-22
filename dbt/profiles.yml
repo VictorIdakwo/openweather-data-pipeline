@@ -5,7 +5,7 @@ default:
       type: databricks
       schema: default
       host: "{{ env_var('DATABRICKS_HOST') }}"
-      http_path: "/sql/1.0/warehouses/YOUR_WAREHOUSE_ID"
+      http_path: "/sql/1.0/warehouses/b1fcf80ad7899d1c"
       token: "{{ env_var('DATABRICKS_TOKEN') }}"
       threads: 4
 
